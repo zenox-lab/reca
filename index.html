@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalaRápida</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Syne',sans-serif;background:#0d1117;color:#e6edf3;
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 5rem;
+  background-image:radial-gradient(ellipse at 10% 0%,#162032 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 100%,#0d2218 0%,transparent 50%);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wrap{width:100%;max-width:560px}
+.header{text-align:center;margin-bottom:2rem;animation:fadeUp .5s ease both}
+.badge{display:inline-block;background:#f0c040;color:#111;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:4px 14px;margin-bottom:14px}
+h1{font-size:clamp(2rem,6vw,3rem);font-weight:900;letter-spacing:-.04em;line-height:1}
+h1 em{color:#f0c040;font-style:normal}
+.sub{color:#4a5568;font-size:13px;margin-top:8px}
+.modo-card{background:#161b22;border:2px solid #21262d;border-radius:18px;padding:26px;text-align:center;cursor:pointer;transition:all .25s;margin-bottom:12px;animation:fadeUp .4s ease both}
+.modo-card:hover{border-color:#f0c040;transform:translateY(-3px);box-shadow:0 12px 40px #f0c04018}
+.modo-card .icon{font-size:42px;margin-bottom:10px}
+.modo-card h2{font-size:18px;font-weight:800;margin-bottom:4px}
+.modo-card p{font-size:13px;color:#4a5568}
+.modo-card.verde:hover{border-color:#3fb97a;box-shadow:0 12px 40px #3fb97a18}
+.card{background:#161b22;border:1px solid #21262d;border-radius:16px;padding:20px;margin-bottom:14px;animation:fadeUp .35s ease both}
+label.lbl{display:block;font-size:11px;font-weight:700;color:#4a5568;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+textarea,input[type=text]{width:100%;background:#0d1117;border:1px solid #21262d;color:#e6edf3;border-radius:10px;padding:10px 13px;font-size:14px;font-family:'DM Mono',monospace;outline:none;transition:border .2s;resize:vertical}
+textarea:focus,input[type=text]:focus{border-color:#f0c040}
+textarea{min-height:80px}
+.btn{padding:11px 18px;border-radius:10px;border:none;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn:active{transform:scale(.97)}
+.btn-full{width:100%;justify-content:center}
+.btn-amarelo{background:#f0c040;color:#111}
+.btn-verde{background:#3fb97a;color:#fff}
+.btn-ghost{background:#21262d;border:1px solid #30363d;color:#8b949e}
+.btn-sm{font-size:12px;padding:6px 13px}
+.btn-danger{background:none;border:1px solid #ff5f7e55;color:#ff5f7e;font-size:12px;padding:5px 10px;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700}
+.btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn-copy{background:#21262d;border:1px solid #30363d;color:#8b949e;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:700;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-copy.ok{background:#1a3a2a;border-color:#3fb97a;color:#3fb97a}
+.chip{border-radius:99px;font-size:11px;font-weight:700;padding:3px 10px;letter-spacing:.06em;text-transform:uppercase;display:inline-block}
+.chip-azul{background:#1a2a3a;color:#58a6ff;border:1px solid #2a3a5a}
+.chip-amarelo{background:#3a3010;color:#f0c040;border:1px solid #5a4a20}
+.chip-verde{background:#1a3a2a;color:#3fb97a;border:1px solid #2a5a3a}
+.item{background:#0d1117;border:1px solid #21262d;border-radius:12px;padding:14px;margin-bottom:8px;animation:popIn .25s ease both}
+.item-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.item-ts{font-size:11px;color:#4a5568;margin-left:auto}
+.btn-rm{background:none;border:none;color:#ff5f7e;cursor:pointer;font-size:14px;padding:0 2px}
+.item-link{color:#58a6ff;font-family:'DM Mono',monospace;font-size:13px;word-break:break-all;text-decoration:underline;display:block;margin-bottom:6px}
+.item-txt{color:#c9d1d9;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word;margin-bottom:6px}
+.arq-item{background:#0d1117;border:1px solid #21262d;border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;animation:popIn .25s ease both}
+.arq-icon{font-size:26px;flex-shrink:0}
+.arq-info{flex:1;min-width:0}
+.arq-nome{font-size:13px;font-weight:700;color:#e6edf3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arq-tam{font-size:11px;color:#4a5568;font-family:'DM Mono',monospace;margin-top:2px}
+.upload-zone{border:2px dashed #30363d;border-radius:12px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.upload-zone:hover,.upload-zone.drag{border-color:#f0c040;background:#f0c04008}
+.upload-zone .uz-icon{font-size:30px}
+.upload-zone p{color:#4a5568;font-size:13px;margin-top:6px}
+#fileInput{display:none}
+.progress{height:6px;background:#21262d;border-radius:99px;overflow:hidden;margin-top:8px;display:none}
+.progress-fill{height:100%;background:#f0c040;border-radius:99px;width:0%;transition:width .3s}
+.vazio{text-align:center;color:#30363d;padding:28px 0;font-size:14px}
+.secao-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.secao-lbl{font-size:11px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.1em}
+.sep{border:none;border-top:1px solid #21262d;margin:14px 0}
+.back{background:none;border:none;color:#4a5568;cursor:pointer;font-size:13px;font-family:inherit;margin-bottom:14px;display:flex;align-items:center;gap:5px;padding:0}
+.back:hover{color:#8b949e}
+.erro{color:#ff5f7e;font-size:13px;margin-top:8px;text-align:center}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid #30363d;border-top-color:#f0c040;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+.loading{text-align:center;padding:40px;color:#4a5568;font-size:14px}
+.senha-display{font-family:'DM Mono',monospace;font-size:34px;font-weight:900;letter-spacing:.15em;color:#f0c040;text-align:center;padding:10px;background:#f0c04010;border:2px dashed #f0c04044;border-radius:10px;margin:10px 0}
+.info-txt{font-size:12px;color:#4a5568;text-align:center;line-height:1.6}
+.status-bar{display:flex;align-items:center;gap:8px;background:#161b22;border:1px solid #21262d;border-radius:12px;padding:11px 16px;margin-bottom:14px;font-size:13px;color:#8b949e}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">Sala de Aula</div>
+  <h1>Sala<em>Rápida</em></h1>
+  <p class="sub">Professor posta · Aluno acessa · Sem cadastro</p>
+</div>
+<div class="wrap" id="app"></div>
+
+<script>
+// ═══════════════════════════════════════
+//  CONFIG — sua chave JSONBin
+// ═══════════════════════════════════════
+const KEY = "$2a$10$bIdB//PowZZvMYVlkZW0IeLbluZb/TfhCCkndo2fNocrmbsy5TtHe";
+const API = "https://api.jsonbin.io/v3/b";
+
+// ═══════════════════════════════════════
+//  ESTADO
+// ═══════════════════════════════════════
+let modo       = null;
+let binId      = localStorage.getItem("sr_bin") || null;
+let senhaProf  = localStorage.getItem("sr_senha") || novasSenha();
+let sala       = { senha:"", mensagens:[], arquivos:[] };
+let pollTimer  = null;
+let alunoSenha = null;
+let alunoMeuBinId = null;
+
+// ═══════════════════════════════════════
+//  JSONBin
+// ═══════════════════════════════════════
+async function criarBin(dados){
+  const r = await fetch(API,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","X-Master-Key":KEY,"X-Bin-Private":"false","X-Bin-Name":"salarapida-"+dados.senha},
+    body:JSON.stringify(dados)
+  });
+  const j = await r.json();
+  return j.metadata?.id || null;
+}
+
+async function lerBin(id){
+  const r = await fetch(`${API}/${id}/latest`,{headers:{"X-Master-Key":KEY}});
+  if(!r.ok) return null;
+  return (await r.json()).record || null;
+}
+
+async function salvarBin(id,dados){
+  await fetch(`${API}/${id}`,{
+    method:"PUT",
+    headers:{"Content-Type":"application/json","X-Master-Key":KEY},
+    body:JSON.stringify(dados)
+  });
+}
+
+// busca bin pelo nome (senha)
+async function buscarPorSenha(senha){
+  try{
+    const r = await fetch(`https://api.jsonbin.io/v3/b?X-Bin-Name=salarapida-${senha}`,{
+      headers:{"X-Master-Key":KEY}
+    });
+    const j = await r.json();
+    if(Array.isArray(j) && j.length){
+      // pega o id do bin mais recente
+      return j[j.length-1]?.record?.metadata?.id || j[j.length-1]?.id || null;
+    }
+  }catch(e){}
+  return null;
+}
+
+// ═══════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════
+function novasSenha(){
+  const s = Math.random().toString(36).substring(2,7).toUpperCase();
+  localStorage.setItem("sr_senha",s);
+  return s;
+}
+function isLink(s){return /^https?:\/\//i.test(s.trim())}
+function hora(ts){return new Date(ts).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
+function tamanho(b){if(b<1024)return b+" B";if(b<1048576)return(b/1024).toFixed(1)+" KB";return(b/1048576).toFixed(1)+" MB"}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function icone(n){const m={pdf:"📄",html:"🌐",htm:"🌐",doc:"📝",docx:"📝",xls:"📊",xlsx:"📊",ppt:"📋",pptx:"📋",png:"🖼️",jpg:"🖼️",jpeg:"🖼️",gif:"🖼️",zip:"🗜️",mp4:"🎬",mp3:"🎵",txt:"📃"};return m[n.split(".").pop().toLowerCase()]||"📁"}
+function html(s){document.getElementById("app").innerHTML=s}
+function fileToBase64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
+function copiarTexto(t,btn){
+  navigator.clipboard.writeText(t).then(()=>{
+    if(!btn)return;
+    const o=btn.textContent;btn.textContent="✓ Copiado!";btn.classList.add("ok");
+    setTimeout(()=>{btn.textContent=o;btn.classList.remove("ok")},1800);
+  });
+}
+
+// ═══════════════════════════════════════
+//  TELA INICIAL
+// ═══════════════════════════════════════
+function telaInicio(){
+  pararPoll(); modo=null;
+  html(`
+    <div class="modo-card" onclick="entrarProf()">
+      <div class="icon">👨‍🏫</div><h2>Sou Professor</h2>
+      <p>Publique links, textos e arquivos para a turma</p>
+    </div>
+    <div class="modo-card verde" onclick="telaEntrarAluno()">
+      <div class="icon">🎒</div><h2>Sou Aluno</h2>
+      <p>Digite o código da sala e acesse o material</p>
+    </div>
+  `);
+}
+
+// ═══════════════════════════════════════
+//  PROFESSOR
+// ═══════════════════════════════════════
+async function entrarProf(){
+  modo="professor";
+  html(`<div class="loading"><div class="spinner"></div><br><br>Carregando sua sala…</div>`);
+  if(!binId){
+    sala={senha:senhaProf,mensagens:[],arquivos:[]};
+    binId=await criarBin(sala);
+    if(!binId){html(`<p class="erro">Erro ao criar sala. Verifique sua conexão.</p>`);return;}
+    localStorage.setItem("sr_bin",binId);
+  }else{
+    const d=await lerBin(binId);
+    if(d) sala=d;
+  }
+  renderProf();
+}
+
+function renderProf(){
+  const url=window.location.href.split("?")[0];
+  const msgs=(sala.mensagens||[]).map(msgProfHTML).join("")||`<div class="vazio">Nenhum item publicado ainda.</div>`;
+  const arqs=(sala.arquivos||[]).map(arqProfHTML).join("")||`<div class="vazio">Nenhum arquivo enviado ainda.</div>`;
+  html(`
+    <button class="back" onclick="telaInicio()">← Voltar</button>
+
+    <div class="card">
+      <label class="lbl">Código da sala — escreva no quadro</label>
+      <div class="senha-display">${senhaProf}</div>
+      <p class="info-txt">Alunos abrem este link no navegador:<br>
+        <strong style="color:#58a6ff;font-family:'DM Mono',monospace;font-size:12px">${url}</strong>
+      </p>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn btn-amarelo" style="flex:1" onclick="copiarTexto('${senhaProf}',this)">📋 Copiar código</button>
+        <button class="btn btn-ghost" onclick="copiarTexto('${url}',this)">🔗 Copiar link</button>
+        <button class="btn btn-ghost" onclick="novaSala()">🔄 Nova sala</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label class="lbl">Publicar link ou texto</label>
+      <textarea id="txtMsg" placeholder="https://... ou qualquer texto&#10;Ctrl+Enter para publicar" rows="3"></textarea>
+      <button class="btn btn-amarelo btn-full" style="margin-top:10px" onclick="publicarMsg()">⚡ Publicar agora</button>
+    </div>
+
+    <div class="card">
+      <label class="lbl">Enviar arquivo para download</label>
+      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="uz-icon">📁</div>
+        <p>Clique para escolher ou arraste o arquivo aqui<br>
+          <span style="font-size:11px;color:#30363d">HTML, PDF, Word, imagem… • Máx 4 MB</span>
+        </p>
+      </div>
+      <input type="file" id="fileInput" onchange="uploadArquivo(this)">
+      <div class="progress" id="prog"><div class="progress-fill" id="progFill"></div></div>
+      <div id="upMsg" style="font-size:12px;color:#4a5568;margin-top:6px"></div>
+    </div>
+
+    <div class="secao-head">
+      <span class="secao-lbl">📌 Links & Textos</span>
+      ${sala.mensagens?.length?`<button class="btn-danger" onclick="limparMsgs()">Limpar tudo</button>`:""}
+    </div>
+    ${msgs}
+    <hr class="sep">
+    <div class="secao-head">
+      <span class="secao-lbl">📁 Arquivos disponíveis</span>
+      ${sala.arquivos?.length?`<button class="btn-danger" onclick="limparArqs()">Limpar tudo</button>`:""}
+    </div>
+    ${arqs}
+  `);
+
+  // drag & drop
+  const dz=document.getElementById("dropZone");
+  if(dz){
+    dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("drag")});
+    dz.addEventListener("dragleave",()=>dz.classList.remove("drag"));
+    dz.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("drag");if(e.dataTransfer.files[0])uploadArquivo({files:e.dataTransfer.files})});
+  }
+  const ta=document.getElementById("txtMsg");
+  if(ta) ta.addEventListener("keydown",e=>{if(e.ctrlKey&&e.key==="Enter")publicarMsg()});
+}
+
+async function publicarMsg(){
+  const ta=document.getElementById("txtMsg");
+  const v=ta?.value.trim();
+  if(!v)return;
+  sala.mensagens=[{id:Date.now(),conteudo:v,ts:Date.now()},...(sala.mensagens||[])];
+  ta.value="";
+  await salvarBin(binId,sala);
+  renderProf();
+}
+
+async function removerMsg(id){
+  sala.mensagens=(sala.mensagens||[]).filter(m=>m.id!==id);
+  await salvarBin(binId,sala);renderProf();
+}
+
+async function limparMsgs(){
+  if(!confirm("Limpar todos os links e textos?"))return;
+  sala.mensagens=[];await salvarBin(binId,sala);renderProf();
+}
+
+async function uploadArquivo(input){
+  const file=input.files?.[0];
+  if(!file)return;
+  if(file.size>4*1024*1024){document.getElementById("upMsg").textContent="❌ Arquivo muito grande (máx 4 MB).";return;}
+  const pb=document.getElementById("prog");
+  const pf=document.getElementById("progFill");
+  const um=document.getElementById("upMsg");
+  pb.style.display="block";pf.style.width="20%";um.textContent="⏳ Carregando…";
+  try{
+    const b64=await fileToBase64(file);
+    pf.style.width="60%";um.textContent="⏳ Enviando…";
+    sala.arquivos=[{id:Date.now(),nome:file.name,tamanho:file.size,tipo:file.type,data:b64,ts:Date.now()},...(sala.arquivos||[])];
+    await salvarBin(binId,sala);
+    pf.style.width="100%";um.textContent="✅ Arquivo enviado com sucesso!";
+    setTimeout(()=>{pb.style.display="none";pf.style.width="0%";um.textContent="";renderProf()},1200);
+  }catch(e){um.textContent="❌ Erro ao enviar. Tente novamente.";pb.style.display="none";}
+}
+
+async function removerArq(id){
+  sala.arquivos=(sala.arquivos||[]).filter(a=>a.id!==id);
+  await salvarBin(binId,sala);renderProf();
+}
+
+async function limparArqs(){
+  if(!confirm("Remover todos os arquivos?"))return;
+  sala.arquivos=[];await salvarBin(binId,sala);renderProf();
+}
+
+async function novaSala(){
+  if(!confirm("Criar nova sala? O código atual deixará de funcionar."))return;
+  localStorage.removeItem("sr_bin");localStorage.removeItem("sr_senha");
+  binId=null;senhaProf=novasSenha();await entrarProf();
+}
+
+// ═══════════════════════════════════════
+//  ALUNO
+// ═══════════════════════════════════════
+function telaEntrarAluno(){
+  modo="aluno";
+  html(`
+    <button class="back" onclick="telaInicio()">← Voltar</button>
+    <div class="card" style="text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">🎒</div>
+      <p style="color:#8b949e;font-size:14px;margin-bottom:16px">Digite o código que o professor escreveu no quadro</p>
+      <input id="codInput" type="text" maxlength="5" placeholder="AB3X7"
+        style="font-size:30px;font-weight:900;letter-spacing:.18em;text-align:center;color:#f0c040;border-width:2px;text-transform:uppercase"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter')entrarAluno()">
+      <div id="erroAluno" class="erro" style="display:none"></div>
+      <button class="btn btn-verde btn-full" style="margin-top:14px" onclick="entrarAluno()">Entrar na sala →</button>
+    </div>
+  `);
+}
+
+async function entrarAluno(){
+  const inp=document.getElementById("codInput");
+  const cod=inp?.value.trim().toUpperCase();
+  if(!cod)return;
+  html(`<div class="loading"><div class="spinner"></div><br><br>Procurando sala <strong>${cod}</strong>…</div>`);
+
+  try{
+    const id=await buscarPorSenha(cod);
+    if(!id){
+      telaEntrarAluno();
+      setTimeout(()=>{
+        const e=document.getElementById("erroAluno");
+        const i=document.getElementById("codInput");
+        if(e){e.textContent="Sala não encontrada. Verifique o código.";e.style.display="block";}
+        if(i)i.value=cod;
+      },50);
+      return;
+    }
+    const d=await lerBin(id);
+    if(!d||d.senha!==cod){
+      telaEntrarAluno();
+      setTimeout(()=>{
+        const e=document.getElementById("erroAluno");
+        if(e){e.textContent="Sala não encontrada. Verifique o código.";e.style.display="block";}
+      },50);
+      return;
+    }
+    alunoSenha=cod;alunoMeuBinId=id;sala=d;
+    renderAluno();iniciarPoll();
+  }catch(e){
+    html(`<p class="erro">Erro de conexão. Tente novamente.</p><br><button class="btn btn-ghost" onclick="telaInicio()">← Voltar</button>`);
+  }
+}
+
+function renderAluno(){
+  const msgs=(sala.mensagens||[]).map(msgAlunoHTML).join("")||`<div class="vazio">⏳ Aguardando o professor publicar algo…</div>`;
+  const arqs=(sala.arquivos||[]).map(arqAlunoHTML).join("")||`<div class="vazio">📭 Nenhum arquivo disponível ainda…</div>`;
+  html(`
+    <div class="status-bar">
+      <span class="chip chip-verde">Sala ${alunoSenha}</span>
+      <span style="margin-left:auto;font-size:12px">Atualiza a cada 5s</span>
+      <button class="btn-danger" onclick="sairAluno()">Sair</button>
+    </div>
+    <div class="secao-head"><span class="secao-lbl">📌 Links & Textos</span></div>
+    ${msgs}
+    <hr class="sep">
+    <div class="secao-head"><span class="secao-lbl">📁 Arquivos para Download</span></div>
+    ${arqs}
+  `);
+}
+
+function sairAluno(){pararPoll();alunoSenha=null;alunoMeuBinId=null;telaInicio();}
+
+function iniciarPoll(){
+  pararPoll();
+  pollTimer=setInterval(async()=>{
+    if(modo!=="aluno"||!alunoMeuBinId)return;
+    const d=await lerBin(alunoMeuBinId);
+    if(d){sala=d;renderAluno();}
+  },5000);
+}
+
+function pararPoll(){if(pollTimer){clearInterval(pollTimer);pollTimer=null;}}
+
+// ═══════════════════════════════════════
+//  HTML DOS ITENS
+// ═══════════════════════════════════════
+function msgProfHTML(m){
+  const url=isLink(m.conteudo);
+  const c=esc(m.conteudo);
+  return `<div class="item">
+    <div class="item-head">
+      <span class="chip ${url?"chip-azul":"chip-amarelo"}">${url?"🔗 Link":"📝 Texto"}</span>
+      <span class="item-ts">${hora(m.ts)}</span>
+      <button class="btn-rm" onclick="removerMsg(${m.id})">✕</button>
+    </div>
+    ${url?`<a class="item-link" href="${c}" target="_blank" rel="noreferrer">${c}</a>`:`<p class="item-txt">${c}</p>`}
+    <div class="btn-row">
+      <button class="btn-copy" onclick="copiarTexto('${c.replace(/'/g,"\\'")}',this)">Copiar</button>
+      ${url?`<a class="btn-copy" href="${c}" target="_blank" rel="noreferrer">Abrir ↗</a>`:""}
+    </div>
+  </div>`;
+}
+
+function msgAlunoHTML(m){
+  const url=isLink(m.conteudo);
+  const c=esc(m.conteudo);
+  return `<div class="item">
+    <div class="item-head">
+      <span class="chip ${url?"chip-azul":"chip-amarelo"}">${url?"🔗 Link":"📝 Texto"}</span>
+      <span class="item-ts">${hora(m.ts)}</span>
+    </div>
+    ${url?`<a class="item-link" href="${c}" target="_blank" rel="noreferrer">${c}</a>`:`<p class="item-txt">${c}</p>`}
+    <div class="btn-row">
+      <button class="btn-copy" onclick="copiarTexto('${c.replace(/'/g,"\\'")}',this)">Copiar</button>
+      ${url?`<a class="btn-copy" href="${c}" target="_blank" rel="noreferrer">Abrir ↗</a>`:""}
+    </div>
+  </div>`;
+}
+
+function arqProfHTML(a){
+  return `<div class="arq-item">
+    <div class="arq-icon">${icone(a.nome)}</div>
+    <div class="arq-info">
+      <div class="arq-nome">${esc(a.nome)}</div>
+      <div class="arq-tam">${tamanho(a.tamanho)} • ${hora(a.ts)}</div>
+    </div>
+    <button class="btn-danger" onclick="removerArq(${a.id})" title="Remover">✕</button>
+  </div>`;
+}
+
+function arqAlunoHTML(a){
+  return `<div class="arq-item">
+    <div class="arq-icon">${icone(a.nome)}</div>
+    <div class="arq-info">
+      <div class="arq-nome">${esc(a.nome)}</div>
+      <div class="arq-tam">${tamanho(a.tamanho)}</div>
+    </div>
+    <a class="btn btn-verde btn-sm" href="${a.data}" download="${esc(a.nome)}" style="text-decoration:none;flex-shrink:0">⬇ Baixar</a>
+  </div>`;
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+telaInicio();
+</script>
+</body>
+</html>
